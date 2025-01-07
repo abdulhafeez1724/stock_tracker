@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Tracker</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Stock Price Tracker</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="stock-table">
+        </tbody>
+    </table>
+
+    <script>
+        const stockSocket = new WebSocket('ws://' + window.location.host + '/ws/stock/');
+
+        stockSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            console.log('Received data:', data); // Log the entire data object
+            const row = `<tr><td>${data.symbol}</td><td>${data.price}</td><td>${data.time}</td></tr>`;
+            console.log('Row to append:', row);
+            $('#stock-table').append(row);
+        };
+
+        stockSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+    </script>
+</body>
+</html>
